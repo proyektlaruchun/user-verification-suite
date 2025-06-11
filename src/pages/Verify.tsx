@@ -142,7 +142,7 @@ const Verify = () => {
               <Button
                 variant="ghost"
                 onClick={handleResendCode}
-                className="text-blue-600"
+                className="text-blue-600 hover:bg-blue-50"
               >
                 Kodni qayta yuborish
               </Button>
