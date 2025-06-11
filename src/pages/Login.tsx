@@ -7,9 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Car, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import PhoneInput from "@/components/PhoneInput";
 
 const Login = () => {
   const [formData, setFormData] = useState({
+    countryCode: "+998",
     phoneNumber: "",
     password: ""
   });
@@ -24,8 +26,8 @@ const Login = () => {
 
     if (!formData.phoneNumber.trim()) {
       newErrors.phoneNumber = "Telefon raqam kiritish majburiy";
-    } else if (!/^\+998\d{9}$/.test(formData.phoneNumber)) {
-      newErrors.phoneNumber = "Telefon raqam formati: +998XXXXXXXXX";
+    } else if (!/^\d{9}$/.test(formData.phoneNumber)) {
+      newErrors.phoneNumber = "Telefon raqam 9 ta raqamdan iborat bo'lishi kerak";
     }
 
     if (!formData.password) {
@@ -64,7 +66,7 @@ const Login = () => {
       // Navigate to verification page with phone number
       navigate("/verify", { 
         state: { 
-          phoneNumber: formData.phoneNumber,
+          phoneNumber: `${formData.countryCode}${formData.phoneNumber}`,
           type: "login" 
         } 
       });
@@ -105,13 +107,12 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="phoneNumber">Telefon Raqam</Label>
-              <Input
-                id="phoneNumber"
-                type="tel"
-                value={formData.phoneNumber}
-                onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
-                placeholder="+998901234567"
-                className={errors.phoneNumber ? "border-red-500" : ""}
+              <PhoneInput
+                countryCode={formData.countryCode}
+                phoneNumber={formData.phoneNumber}
+                onCountryCodeChange={(value) => handleInputChange("countryCode", value)}
+                onPhoneNumberChange={(value) => handleInputChange("phoneNumber", value)}
+                error={errors.phoneNumber}
               />
               {errors.phoneNumber && (
                 <p className="text-sm text-red-500 mt-1">{errors.phoneNumber}</p>
