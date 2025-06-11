@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Car, Eye, EyeOff } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import PhoneInput from "@/components/PhoneInput";
@@ -109,7 +110,12 @@ const ForgotPassword = () => {
   const handleVerifySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateVerifyStep()) {
+    if (formData.verificationCode.length !== 6) {
+      toast({
+        title: "Xatolik!",
+        description: "6 raqamli kodni to'liq kiriting",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -220,27 +226,28 @@ const ForgotPassword = () => {
           )}
 
           {step === "verify" && (
-            <form onSubmit={handleVerifySubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="verificationCode">Tasdiqlash Kodi</Label>
-                <Input
-                  id="verificationCode"
-                  type="text"
+            <form onSubmit={handleVerifySubmit} className="space-y-6">
+              <div className="flex justify-center">
+                <InputOTP
                   maxLength={6}
                   value={formData.verificationCode}
-                  onChange={(e) => handleInputChange("verificationCode", e.target.value)}
-                  placeholder="6 raqamli kodni kiriting"
-                  className={errors.verificationCode ? "border-red-500" : ""}
-                />
-                {errors.verificationCode && (
-                  <p className="text-sm text-red-500 mt-1">{errors.verificationCode}</p>
-                )}
+                  onChange={(value) => handleInputChange("verificationCode", value)}
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
               </div>
 
               <Button 
                 type="submit" 
                 className="w-full" 
-                disabled={isLoading}
+                disabled={isLoading || formData.verificationCode.length !== 6}
               >
                 {isLoading ? "Tekshirilmoqda..." : "Tasdiqlash"}
               </Button>
